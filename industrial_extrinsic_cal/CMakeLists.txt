@@ -32,6 +32,11 @@ find_package(Eigen3 REQUIRED)
 
 find_package(OpenCV REQUIRED)
 message("-- Found OpenCV version ${OpenCV_VERSION}: ${OpenCV_INCLUDE_DIRS}")
+if(${OpenCV_VERSION} VERSION_GREATER "3.0")
+    add_definitions(-DOPENCV_VERSION_3)
+elseif(${OpenCV_VERSION} VERSION_GREATER "2.4")
+    add_definitions(-DOPENCV_VERSION_2)
+endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(yaml_cpp REQUIRED yaml-cpp)

@@ -103,9 +103,13 @@ namespace industrial_extrinsic_cal
     circle_detector_ptr_ = new cv::CircleDetector(circle_params);
   }
   else{
-    circle_detector_ptr_ = cv::SimpleBlobDetector::create(simple_blob_params);
-  }
+#if OPENCV_VERSION_3
+      circle_detector_ptr_ = cv::SimpleBlobDetector::create(simple_blob_params);
+#elif OPENCV_VERSION_2
+      circle_detector_ptr_ = new cv::SimpleBlobDetector(simple_blob_params);
+#endif
 
+  }
 }
 
 bool ROSCameraObserver::addTarget(boost::shared_ptr<Target> targ, Roi &roi, Cost_function cost_type)
