@@ -43,7 +43,6 @@
 
 using std::string;
 using boost::shared_ptr;
-using boost::make_shared;
 using ceres::CostFunction;
 using ceres::Problem;
 using ceres::Solver;
@@ -172,8 +171,8 @@ action_server_(nh_,"run_calibration",boost::bind(&RangeNmonoExCalService::action
   }
   industrial_extrinsic_cal::CameraParameters range_cp;
   industrial_extrinsic_cal::CameraParameters mono_cp;
-  range_camera_ = make_shared<industrial_extrinsic_cal::Camera>(range_camera_name_, range_cp, false);
-  mono_camera_ = make_shared<industrial_extrinsic_cal::Camera>(mono_camera_name_, mono_cp, false);
+  range_camera_ = boost::make_shared<industrial_extrinsic_cal::Camera>(range_camera_name_, range_cp, false);
+  mono_camera_ = boost::make_shared<industrial_extrinsic_cal::Camera>(mono_camera_name_, mono_cp, false);
   initMonoCamera();
   initRangeCamera();
 
@@ -323,7 +322,7 @@ bool RangeNmonoExCalService::executeCallBack( industrial_extrinsic_cal::calibrat
 
 void RangeNmonoExCalService::initMCircleTarget(int rows, int cols, double circle_dia, double spacing)
 {
-  target_ =  make_shared<industrial_extrinsic_cal::Target>();
+  target_ =  boost::make_shared<industrial_extrinsic_cal::Target>();
   target_->is_moving_ = true;
   target_->target_name_ = "modified_circle_target";
   target_->target_frame_ = "target_frame";
@@ -349,13 +348,13 @@ void  RangeNmonoExCalService::initMonoCamera()
 {
   // set mono_camera's initial conditions by pulling from ti
   shared_ptr<industrial_extrinsic_cal::TransformInterface>  mono_ti = 
-    make_shared<industrial_extrinsic_cal::ROSSimpleCameraCalTInterface>(mono_camera_frame_,  mono_camera_mounting_frame_);
+    boost::make_shared<industrial_extrinsic_cal::ROSSimpleCameraCalTInterface>(mono_camera_frame_,  mono_camera_mounting_frame_);
   std::string ref_frame("dummy");
   mono_ti->setReferenceFrame(ref_frame);
   mono_camera_->setTransformInterface(mono_ti);
 
   // create the observers and get the camera info data if available, we only use it to set ROI when not set by rosparam
-  mono_camera_->camera_observer_ = make_shared<ROSCameraObserver>(mono_image_topic_, mono_camera_name_);
+  mono_camera_->camera_observer_ = boost::make_shared<ROSCameraObserver>(mono_image_topic_, mono_camera_name_);
   double fx,fy,cx,cy,k1,k2,k3,p1,p2;
   int width,height;
   mono_camera_->camera_observer_->pullCameraInfo(fx,fy,cx,cy,k1,k2,k3,p1,p2,width,height);
@@ -386,13 +385,13 @@ void  RangeNmonoExCalService::initRangeCamera()
 {
  // set range_camera's initial conditions by pulling from ti
   shared_ptr<industrial_extrinsic_cal::TransformInterface>  range_ti = 
-    make_shared<industrial_extrinsic_cal::ROSSimpleCameraCalTInterface>(range_camera_frame_,  range_camera_mounting_frame_);
+    boost::make_shared<industrial_extrinsic_cal::ROSSimpleCameraCalTInterface>(range_camera_frame_,  range_camera_mounting_frame_);
   std::string ref_frame("dummy");
   range_ti->setReferenceFrame(ref_frame);
   range_camera_->setTransformInterface(range_ti);
 
   // create the observers and get the camera info data if available, we only use it to set ROI when not set by rosparam
-  range_camera_->camera_observer_ = make_shared<ROSCameraObserver>(range_image_topic_, range_camera_name_);
+  range_camera_->camera_observer_ = boost::make_shared<ROSCameraObserver>(range_image_topic_, range_camera_name_);
   double fx,fy,cx,cy,k1,k2,k3,p1,p2;
   int width,height;
   range_camera_->camera_observer_->pullCameraInfo(fx,fy,cx,cy,k1,k2,k3,p1,p2,width,height);

@@ -170,12 +170,12 @@ void CircleDetector::write( cv::FileStorage& fs ) const
     params.write(fs);
 }
 
-void CircleDetector::findCircles(const cv::Mat &image, const cv::Mat &binaryImage, vector<Center> &centers) const
+void CircleDetector::findCircles(const cv::Mat &image, const cv::Mat &binaryImage, std::vector<Center> &centers) const
 {
 	(void)image;
 	centers.clear();
 
-	vector < vector<Point> > contours;
+  std::vector < std::vector<Point> > contours;
 	Mat tmpBinaryImage = binaryImage.clone();
 	findContours(tmpBinaryImage, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 
@@ -232,7 +232,7 @@ void CircleDetector::findCircles(const cv::Mat &image, const cv::Mat &binaryImag
 
 		if (params.filterByConvexity)
 		{
-			vector < Point > hull;
+      std::vector < Point > hull;
 			convexHull(Mat(contours[contourIdx]), hull);
 			double area = contourArea(Mat(contours[contourIdx]));
 			double hullArea = contourArea(Mat(hull));
@@ -292,7 +292,7 @@ void CircleDetector::detectImpl(const cv::Mat& image, std::vector<cv::KeyPoint>&
 	else
 		grayscaleImage = image;
 
-	vector < vector<Center> > centers;
+  std::vector < std::vector<Center> > centers;
 	for (double thresh = params.minThreshold; thresh < params.maxThreshold; thresh += params.thresholdStep)
 	{
 		Mat binarizedImage;
@@ -303,9 +303,9 @@ void CircleDetector::detectImpl(const cv::Mat& image, std::vector<cv::KeyPoint>&
 		//    cvtColor( binarizedImage, keypointsImage, CV_GRAY2RGB );
 #endif
 
-		vector < Center > curCenters;
+    std::vector < Center > curCenters;
 		findCircles(grayscaleImage, binarizedImage, curCenters);
-		vector < vector<Center> > newCenters;
+    std::vector < std::vector<Center> > newCenters;
 		for (size_t i = 0; i < curCenters.size(); i++)
 		{
 #ifdef DEBUG_CIRCLE_DETECTOR
@@ -336,7 +336,7 @@ void CircleDetector::detectImpl(const cv::Mat& image, std::vector<cv::KeyPoint>&
 			}
 			if (isNew)
 			{
-				newCenters.push_back(vector<Center> (1, curCenters[i]));
+        newCenters.push_back(std::vector<Center> (1, curCenters[i]));
 				//centers.push_back(vector<Center> (1, curCenters[i]));
 			}
 		}

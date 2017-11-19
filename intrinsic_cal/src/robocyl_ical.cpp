@@ -44,7 +44,6 @@
 
 using std::string;
 using boost::shared_ptr;
-using boost::make_shared;
 using ceres::CostFunction;
 using ceres::Problem;
 using ceres::Solver;
@@ -184,9 +183,9 @@ RobocylCalService::RobocylCalService(ros::NodeHandle nh)
   }
 
   bool is_moving = true;
-  camera_ =  make_shared<industrial_extrinsic_cal::Camera>("my_camera", camera_parameters_, is_moving);
-  camera_->trigger_ = make_shared<NoWaitTrigger>();
-  camera_->camera_observer_ = make_shared<ROSCameraObserver>(image_topic_, camera_name_);
+  camera_ =  boost::make_shared<industrial_extrinsic_cal::Camera>("my_camera", camera_parameters_, is_moving);
+  camera_->trigger_ = boost::make_shared<NoWaitTrigger>();
+  camera_->camera_observer_ = boost::make_shared<ROSCameraObserver>(image_topic_, camera_name_);
   if(!camera_->camera_observer_->pullCameraInfo(camera_->camera_parameters_.focal_length_x,
                                            camera_->camera_parameters_.focal_length_y,
                                            camera_->camera_parameters_.center_x,
@@ -371,7 +370,7 @@ bool RobocylCalService::executeCallBack( intrinsic_cal::rail_ical_run::Request &
 
 void RobocylCalService::initMCircleTarget(int rows, int cols, double circle_dia, double spacing)
 {
-  target_ =  make_shared<industrial_extrinsic_cal::Target>();
+  target_ =  boost::make_shared<industrial_extrinsic_cal::Target>();
   target_->is_moving_ = true;
   target_->target_name_ = "modified_circle_target";
   target_->target_frame_ = "target_frame";

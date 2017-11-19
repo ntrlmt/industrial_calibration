@@ -103,7 +103,7 @@ namespace industrial_extrinsic_cal
     circle_detector_ptr_ = new cv::CircleDetector(circle_params);
   }
   else{
-    circle_detector_ptr_ = new cv::SimpleBlobDetector(simple_blob_params);
+    circle_detector_ptr_ = cv::SimpleBlobDetector::create(simple_blob_params);
   }
 
 }
